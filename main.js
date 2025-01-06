@@ -155,3 +155,84 @@ app.on("before-quit", () => {
     });
   }
 });
+
+//Deteccion de sistema operativo
+const os = require("os");
+const currentSystemOs = os.type(); // Devuelve el tipo de sistema operativo
+
+//Test monitoreo de todos los procesos
+const interval = 5000; // Intervalo en milisegundos para la monitorización (5 segundos)
+const { exec } = require("child_process");
+
+// Lista de navegadores para filtrar en la monitorización
+const browsers = ["chrome", "brave", "firefox", "edge", "safari", "opera"]; 
+
+function monitorUserProcesses() {
+  if (currentSystemOs === "Windows_NT") {
+    console.log(
+      "Iniciando monitoreo en Windows para detectar procesos de usuario..."
+    );
+    setInterval(() => {
+      exec("tasklist /V", (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error ejecutando tasklist: ${error.message}`);
+          return;
+        }
+
+        const processes = stdout.split("\n").map((line) => line.trim());
+        const userProcesses = processes.filter((line) => {
+          return (
+            line &&
+            !line.toLowerCase().includes("services.exe") && // Excluir servicios
+            !line.toLowerCase().includes("services") && // Excluir servicios
+            !line.toLowerCase().includes("system") && // Excluir procesos del sistema
+            !line.toLowerCase().includes("svchost.exe") && // Excluir procesos svchost
+            !browsers.some((browser) => line.toLowerCase().includes(browser)) // Excluir navegadores
+          );
+        }); // Lista de procesos de usuario
+
+        //Disparar procesos del usuario aqui
+
+        console.log("Procesos de usuario detectados (excluyendo servicios):");
+        console.log(userProcesses.join("\n"));
+      });
+    }, interval);
+  } else if (
+    currentSystemOs === "Linux" ||
+    currentSystemOs === "Darwin"
+    // Darwin es Mac OS
+  ) {
+    console.log(
+      "Iniciando monitoreo en Linux/macOS para detectar procesos de usuario..."
+    );
+    setInterval(() => {
+      exec("ps aux", (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error ejecutando ps aux: ${error.message}`);
+          return;
+        }
+
+        const processes = stdout.split("\n").map((line) => line.trim());
+        const userProcesses = processes.filter((line) => {
+          return (
+            line &&
+            !line.includes("root") && // Excluir procesos del usuario root (generalmente servicios)
+            !line.includes("/sbin/") && // Excluir procesos del sistema
+            !line.includes("/usr/sbin/") && // Excluir más procesos del sistema
+            !browsers.some((browser) => line.toLowerCase().includes(browser)) // Excluir navegadores
+          );
+        }); // Lista de procesos de usuario
+
+        //Disparar procesos del usuario aqui
+
+        console.log("Procesos de usuario detectados (excluyendo servicios):");
+        console.log(userProcesses.join("\n"));
+      });
+    }, interval);
+  } else {
+    console.log("Sistema operativo no soportado para monitoreo.");
+  }
+}
+
+// Llama a la función para iniciar el monitoreo
+monitorUserProcesses();
