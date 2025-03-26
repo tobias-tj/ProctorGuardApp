@@ -10,9 +10,10 @@ async function sendReport({ img, createId }) {
 
   try {
     console.log("Enviando reporte:", payload);
-
+    // Develop: "http://localhost:3000/api/manageReportExam",
+    // Production: "http://161.35.53.140/back/api/manageReportExam",
     const { status } = await axios.post(
-      "http://localhost:3000/api/manageReportExam",
+      "http://161.35.53.140/back/api/manageReportExam",
       payload,
       {
         headers: { "Content-Type": "application/json" },

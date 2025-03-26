@@ -16,45 +16,26 @@ module.exports = {
         authors: "YvagaCore",
         description: "Aplicación para examenes con proctoring",
         setupIcon: "",
-        certificateFile: "", // Opcional, para firmar la app
+        certificateFile: "",
         setupExe: "ProctorGuardInstaller.exe",
         setupMsi: "ProctorGuardInstaller.msi",
         noMsi: false,
-        squirrelRegistryStartupCommands: {
-          securityapp: {
-            command: "open",
-            target: '"[INSTALLDIR]\\proctorguard-exam-app.exe" "%1"',
-          },
-        },
       },
+      platforms: ["win32"], // Solo se ejecutará en Windows
     },
     {
       name: "@electron-forge/maker-zip",
-      platforms: ["darwin"],
+      platforms: ["darwin"], // Solo se ejecutará en macOS
     },
     {
       name: "@electron-forge/maker-dmg",
       config: {
-        name: "SecurityExamApp", // Nombre del .dmg generado
-        overwrite: true, // Sobrescribir si ya existe un .dmg
-        icon: "", // Ruta al icono para macOS (debe ser un .icns)
-        format: "ULFO", // Formato del sistema de archivos, por defecto ULFO
-        background: "", // Opcional: fondo del instalador
-        contents: [
-          {
-            x: 410,
-            y: 150,
-            type: "link",
-            path: "/Applications",
-          },
-          {
-            x: 130,
-            y: 150,
-            type: "file",
-            path: "./out/proctorguard-exam-app-darwin-x64/proctorguard-exam-app.app",
-          },
-        ],
+        name: "SecurityExamApp",
+        overwrite: true,
+        icon: "",
+        format: "ULFO",
       },
+      platforms: ["darwin"], // Solo se ejecutará en macOS
     },
   ],
 };
