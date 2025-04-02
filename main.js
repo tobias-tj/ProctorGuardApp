@@ -6,7 +6,7 @@ const { sendReport } = require("./useReportApi");
 
 let server;
 
-async function captureAllScreens(createId) {
+async function captureAllScreens(createId, token) {
   const displays = screen.getAllDisplays();
   const sources = await desktopCapturer.getSources({
     types: ["screen"],
@@ -29,7 +29,7 @@ async function captureAllScreens(createId) {
     );
 
     // Inicia proceso para enviar a nuestro backend
-    const sent = await sendReport({ img: imageBase64, createId });
+    const sent = await sendReport({ img: imageBase64, createId, token });
 
     if (sent) {
       console.log(`Reporte de captura ${i + 1} enviado exitosamente.`);
@@ -72,15 +72,13 @@ function startServer() {
 
       req.on("end", async () => {
         try {
-          const { createId } = JSON.parse(body);
+          const { createId, token } = JSON.parse(body);
 
-          if (!createId) {
-            throw new Error("createId es obligatorio");
+          if (!createId || !token) {
+            throw new Error("Faltan parametros");
           }
 
-          console.log("Se recibió createId:", createId);
-
-          await captureAllScreens(createId);
+          await captureAllScreens(createId, token);
 
           if (!res.finished) {
             res.writeHead(200, { "Content-Type": "text/plain" });

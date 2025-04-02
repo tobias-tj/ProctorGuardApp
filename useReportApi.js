@@ -1,11 +1,12 @@
 const axios = require("axios");
 
-async function sendReport({ img, createId }) {
+async function sendReport({ img, createId, token }) {
   const payload = {
     createId: createId,
     incidentType: "window_changed",
     time: new Date().toISOString(),
     img,
+    token,
   };
 
   try {
