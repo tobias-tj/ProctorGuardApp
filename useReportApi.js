@@ -12,9 +12,9 @@ async function sendReport({ img, createId, token }) {
   try {
     console.log("Enviando reporte:", payload);
     // Develop: "http://localhost:3000/api/manageReportExam",
-    // Production: "http://161.35.53.140/back/api/manageReportExam",
+    // Production: "https://api.yvagacore.com/back/api/manageReportExam",
     const { status } = await axios.post(
-      "http://161.35.53.140/back/api/manageReportExam",
+      "https://api.yvagacore.com/back/api/manageReportExam",
       payload,
       {
         headers: { "Content-Type": "application/json" },
